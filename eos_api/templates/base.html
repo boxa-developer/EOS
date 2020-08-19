@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>EOS API Integration</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body>
+<div class="w3-panel w3-border w3-round-xxlarge w3-center w3-margin w3-blue w3-padding">
+    <h1>EOS API Integration</h1>
+    <div class="w3-panel w3-border w3-round-xxlarge w3-center w3-margin w3-white">
+        <input type="text" name="" id="" placeholder="API KEY" class="w3-panel w3-border
+        w3-round-xxlarge w3-center" style="outline: none">
+    </div>
+    <div class="w3-cell-row">
+        <button onclick="acc('create')" class="w3-panel w3-border w3-round-xxlarge
+         w3-center w3-margin w3-green" style="outline: none">Create Feature</button>
+        <button onclick="acc('update')" class="w3-panel w3-border w3-round-xxlarge
+        w3-center w3-margin w3-yellow" style="outline: none">Modify Feature</button>
+        <button onclick="acc('read')" class="w3-panel w3-border w3-round-xxlarge
+         w3-center w3-margin w3-black" style="outline: none">Get Feature</button>
+        <button onclick="acc('delete')" class="w3-panel w3-border w3-round-xxlarge
+         w3-center w3-margin w3-red" style="outline: none">Delete Feature</button>
+    </div>
+    <div id="create" class="w3-container w3-hide w3-green w3-round-xxlarge
+    w3-padding w3-animate-zoom">
+        <h3>Create Feature</h3>
+    </div>
+    <div id="update" class="w3-container w3-hide w3-yellow w3-round-xxlarge
+     w3-padding w3-animate-zoom">
+        <h3>Update Feature</h3>
+    </div>
+    <div id="read" class="w3-container w3-hide w3-black w3-round-xxlarge
+     w3-padding w3-animate-zoom">
+        <h3>Read Feature</h3>
+        <div class="w3-container w3-ul">
+            <p class="w3-yellow"><a href="{% url 'collection' %}">Collections</a></p>
+            <p class="w3-yellow"><a href="{% url 'feature' %}">Feature</a></p>
+            <p class="w3-yellow"><a href="{% url 'history' %}">History</a></p>
+        </div>
+    </div>
+    <div id="delete" class="w3-container w3-hide w3-red w3-round-xxlarge
+     w3-padding w3-animate-zoom">
+        <h3>Delete Feature</h3>
+    </div>
+</div>
+
+<script>
+function acc(id) {
+  var x = document.getElementById(id);
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+  } else {
+    x.className = x.className.replace(" w3-show", "");
+  }
+}
+</script>
+</body>
+</html>
