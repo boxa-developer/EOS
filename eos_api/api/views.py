@@ -33,3 +33,10 @@ def create_feature(request):
     data = request.data
     r = requests.post('https://vt.eos.com/api/data/feature/', headers=AUTH_HEADER, json=data)
     return Response(r.content)
+
+
+@api_view(['POST'])
+def modify_feature(request):
+    data = request.data
+    r = requests.post('https://vt.eos.com/api/data/feature/', headers=AUTH_HEADER, json=data)
+    return Response(r.content)
