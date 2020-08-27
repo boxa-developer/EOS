@@ -10,24 +10,38 @@ AUTH_HEADER = {
 }
 
 
+# -------------------------------------------- GET Requests -----------------------------------------------------------
 @api_view(['GET'])
-def collect_view(request):
-    r = requests.get('https://vt.eos.com/api/data/feature/collection?limit=10&page=1', headers=AUTH_HEADER)
+def collection(request, limit, page):
+    r = requests.get(f'https://vt.eos.com/api/data/feature/collection?limit={limit}&page={page}', headers=AUTH_HEADER)
     return Response(r)
 
 
 @api_view(['GET'])
-def feature_view(request):
-    r = requests.get('https://vt.eos.com/api/data/feature/17068821', headers=AUTH_HEADER)
+def history_by_id(request):
+    r = requests.get(f'https://vt.eos.com/api/data/feature/{id}/history', headers=AUTH_HEADER)
     return Response(r)
 
 
 @api_view(['GET'])
-def history_view(request):
-    r = requests.get('https://vt.eos.com/api/data/feature/17068821/history', headers=AUTH_HEADER)
+def feature_by_id(request, id):
+    r = requests.get(f'https://vt.eos.com/api/data/feature/{id}', headers=AUTH_HEADER)
     return Response(r)
 
 
+@api_view(['GET'])
+def feature_by_key(request, key):
+    r = requests.get(f'https://vt.eos.com/api/data/feature?key={key}')
+    return Response(r)
+
+
+@api_view(['GET'])
+def feature_by_point(request, point):
+    r = requests.get(f'https://vt.eos.com/api/data/feature?point={point}')
+    return Response(r)
+
+
+# ------------------------------------------- POST Requests -----------------------------------------------------------
 @api_view(['POST'])
 def create_feature(request):
     data = request.data
@@ -40,6 +54,7 @@ def modify_feature(request):
     data = request.data
     r = requests.post('https://vt.eos.com/api/data/feature/', headers=AUTH_HEADER, json=data)
     return Response(r.content)
+
 
 @api_view(['POST'])
 def delete_feature(request):

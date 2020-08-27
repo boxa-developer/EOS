@@ -1,8 +1,10 @@
 from django.urls import path
 from .views import (
-    collect_view,
-    history_view,
-    feature_view,
+    collection,
+    history_by_id,
+    feature_by_id,
+    feature_by_key,
+    feature_by_point,
     create_feature,
     modify_feature,
     delete_feature
@@ -10,10 +12,12 @@ from .views import (
 
 
 urlpatterns = [
-    path('collection/', collect_view, name='collection'),
-    path('feature/', feature_view, name='feature'),
-    path('history/', history_view, name='history'),
-    path('create/', create_feature, name='create'),
-    path('modify/', modify_feature, name='modify'),
-    path('delete/', delete_feature, name='delete')
+    path('collection?limit=<int:page>&page=<int:limit>', collection, name='collection'),
+    path('feature/<int:id>', feature_by_id, name='feature'),
+    path('history/<int:id>', history_by_id, name='history'),
+    path('feature?key=<str:key>', feature_by_key, name='feature-key'),
+    path('feature?point=<str:point>', feature_by_point, name='feature-point'),
+    path('create', create_feature, name='create'),
+    path('modify', modify_feature, name='modify'),
+    path('delete', delete_feature, name='delete')
 ]
