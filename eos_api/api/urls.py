@@ -12,7 +12,7 @@ from .views import (
 
 
 urlpatterns = [
-    path('collection?limit=<int:page>&page=<int:limit>', collection, name='collection'),
+    path('collection', collection, name='collection'),
     path('feature/<int:id>', feature_by_id, name='feature'),
     path('history/<int:id>', history_by_id, name='history'),
     path('feature?key=<str:key>', feature_by_key, name='feature-key'),

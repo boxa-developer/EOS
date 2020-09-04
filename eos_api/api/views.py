@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.http import JsonResponse
 import requests
 
 AUTH_HEADER = {
@@ -12,9 +13,13 @@ AUTH_HEADER = {
 
 # -------------------------------------------- GET Requests -----------------------------------------------------------
 @api_view(['GET'])
-def collection(request, limit, page):
-    r = requests.get(f'https://vt.eos.com/api/data/feature/collection?limit={limit}&page={page}', headers=AUTH_HEADER)
-    return Response(r)
+def collection(request):
+    data = request.data
+    print(data)
+    print(f'page:{data["page"]} limit:{data["limit"]}')
+    r = requests.get(f'https://vt.eos.com/api/data/feature/collection?limit={data["limit"]}&page={data["page"]}', headers=AUTH_HEADER)
+    print((r.json()['result'][0]))
+    return JsonResponse(r.json(), safe=False)
 
 
 @api_view(['GET'])
