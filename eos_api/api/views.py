@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view
-from rest_framework.response import Response
 from django.http import JsonResponse
+from .models import Feature
 import requests
+
 
 AUTH_HEADER = {
     'Authorization':
@@ -25,25 +26,25 @@ def collection(request):
 @api_view(['GET'])
 def history_by_id(request):
     r = requests.get(f'https://vt.eos.com/api/data/feature/{id}/history', headers=AUTH_HEADER)
-    return Response(r)
+    return JsonResponse(r.json(), safe=False)
 
 
 @api_view(['GET'])
 def feature_by_id(request, id):
     r = requests.get(f'https://vt.eos.com/api/data/feature/{id}', headers=AUTH_HEADER)
-    return Response(r)
+    return JsonResponse(r.json(), safe=False)
 
 
 @api_view(['GET'])
 def feature_by_key(request, key):
     r = requests.get(f'https://vt.eos.com/api/data/feature?key={key}')
-    return Response(r)
+    return JsonResponse(r.json(), safe=False)
 
 
 @api_view(['GET'])
 def feature_by_point(request, point):
     r = requests.get(f'https://vt.eos.com/api/data/feature?point={point}')
-    return Response(r)
+    return JsonResponse(r.json(), safe=False)
 
 
 # ------------------------------------------- POST Requests -----------------------------------------------------------
@@ -51,18 +52,22 @@ def feature_by_point(request, point):
 def create_feature(request):
     data = request.data
     r = requests.post('https://vt.eos.com/api/data/feature/', headers=AUTH_HEADER, json=data)
-    return Response(r.content)
+    get_f = requests.get(f'https://vt.eos.com/api/data/feature/{r.json()["id"]}', headers=AUTH_HEADER)
+    print(get_f.json()['version'])
+    feature = Feature(f_id=r.json()["id"], feature_version=get_f.json()['version'], feature_message=data['message'], data=get_f.json())
+    feature.save(force_insert=True)
+    return JsonResponse(r.json(), safe=False)
 
 
 @api_view(['POST'])
 def modify_feature(request):
     data = request.data
     r = requests.post('https://vt.eos.com/api/data/feature/', headers=AUTH_HEADER, json=data)
-    return Response(r.content)
+    return JsonResponse(r.json(), safe=False)
 
 
 @api_view(['POST'])
 def delete_feature(request):
     data = request.data
     r = requests.post('https://vt.eos.com/api/data/feature/', headers=AUTH_HEADER, json=data)
-    return Response(r.content)
+    return JsonResponse(r.json(), safe=False)
