@@ -1,10 +1,8 @@
-from django.shortcuts import render
 from rest_framework.decorators import api_view
 from django.http import JsonResponse
 from .models import Feature
 from django.db import IntegrityError
 import requests
-
 
 AUTH_HEADER = {
     'Authorization':
@@ -25,7 +23,22 @@ def collection(request):
             ftr.save()
         except IntegrityError as e:
             pass
-    return JsonResponse(r.json(), safe=False)
+    return JsonResponse(len(r.json()['result']), safe=False)
+
+
+@api_view(['GET'])
+def all_features(request):
+    features = Feature.objects.all()
+    fcoll = {
+        'count': len(features),
+        'features': []
+    }
+    for ftr in features:
+        fcoll['features'].append(
+            ftr.data
+        )
+
+    return JsonResponse(collection, safe=False)
 
 
 @api_view(['GET'])
@@ -91,7 +104,7 @@ def delete_feature(request):
     r = requests.post('https://vt.eos.com/api/data/feature/', headers=AUTH_HEADER, json=data)
     id = r.json()['id']
     try:
-        Feature.objects.get(f_id = id).delete()
+        Feature.objects.get(f_id=id).delete()
     except Exception as e:
         print(e)
     return JsonResponse(r.json(), safe=False)
