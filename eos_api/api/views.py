@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from django.http import JsonResponse
 from .models import Feature
+from django.db import IntegrityError
 import requests
 
 
@@ -16,10 +17,14 @@ AUTH_HEADER = {
 @api_view(['GET'])
 def collection(request):
     data = request.data
-    print(data)
-    print(f'page:{data["page"]} limit:{data["limit"]}')
-    r = requests.get(f'https://vt.eos.com/api/data/feature/collection?limit={data["limit"]}&page={data["page"]}', headers=AUTH_HEADER)
-    print((r.json()['result'][0]))
+    r = requests.get(f'https://vt.eos.com/api/data/feature/collection?limit={data["limit"]}&page={data["page"]}',
+                     headers=AUTH_HEADER)
+    for ft in r.json()['result']:
+        try:
+            ftr = Feature(f_id=ft['id'], feature_version=ft['version'], data=ft)
+            ftr.save()
+        except IntegrityError as e:
+            pass
     return JsonResponse(r.json(), safe=False)
 
 
@@ -53,9 +58,12 @@ def create_feature(request):
     data = request.data
     r = requests.post('https://vt.eos.com/api/data/feature/', headers=AUTH_HEADER, json=data)
     get_f = requests.get(f'https://vt.eos.com/api/data/feature/{r.json()["id"]}', headers=AUTH_HEADER)
-    print(get_f.json()['version'])
-    feature = Feature(f_id=r.json()["id"], feature_version=get_f.json()['version'], feature_message=data['message'], data=get_f.json())
-    feature.save(force_insert=True)
+    try:
+        feature = Feature(f_id=r.json()["id"], feature_version=get_f.json()['version'],
+                          feature_message=data['message'], data=get_f.json())
+        feature.save(force_insert=True)
+    except Exception as e:
+        print(e)
     return JsonResponse(r.json(), safe=False)
 
 
@@ -63,6 +71,17 @@ def create_feature(request):
 def modify_feature(request):
     data = request.data
     r = requests.post('https://vt.eos.com/api/data/feature/', headers=AUTH_HEADER, json=data)
+    get_f = requests.get(f'https://vt.eos.com/api/data/feature/{r.json()["id"]}', headers=AUTH_HEADER)
+    try:
+        print(f'id:{r.json()["id"]}')
+        feature = Feature.objects.get(f_id=r.json()["id"])
+        feature.feature_version = get_f.json()['version']
+        feature.feature_message = data['message']
+        feature.data = get_f.json()
+        feature.save()
+    except Exception as e:
+        print(e)
+
     return JsonResponse(r.json(), safe=False)
 
 
@@ -70,4 +89,9 @@ def modify_feature(request):
 def delete_feature(request):
     data = request.data
     r = requests.post('https://vt.eos.com/api/data/feature/', headers=AUTH_HEADER, json=data)
+    id = r.json()['id']
+    try:
+        Feature.objects.get(f_id = id).delete()
+    except Exception as e:
+        print(e)
     return JsonResponse(r.json(), safe=False)

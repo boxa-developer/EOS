@@ -5,5 +5,5 @@ from .models import Feature
 
 @register(Feature)
 class FeatureAdmin(admin.ModelAdmin):
-    list_display = ['f_id', 'feature_version', 'feature_message', 'data']
+    list_display = ['f_id', 'api_key', 'feature_version', 'feature_message', 'data']
     # pass
