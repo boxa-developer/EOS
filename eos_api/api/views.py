@@ -86,7 +86,7 @@ def modify_feature(request):
     r = requests.post('https://vt.eos.com/api/data/feature/', headers=AUTH_HEADER, json=data)
     get_f = requests.get(f'https://vt.eos.com/api/data/feature/{r.json()["id"]}', headers=AUTH_HEADER)
     try:
-        print(f'id:{r.json()["id"]}')
+        # print(f'id:{r.json()["id"]}')
         feature = Feature.objects.get(f_id=r.json()["id"])
         feature.feature_version = get_f.json()['version']
         feature.feature_message = data['message']
