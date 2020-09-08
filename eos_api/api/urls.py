@@ -1,5 +1,5 @@
 from django.urls import path
-from .geometry_views import (
+from eos_api.api.views.geometry_views import (
     collection,
     history_by_id,
     feature_by_id,
@@ -10,21 +10,22 @@ from .geometry_views import (
     delete_feature,
     all_features
 )
-from .stat_views import (
+from eos_api.api.views.stat_views import (
     create_task,
     check_status
 )
-from .search_views import (
+from eos_api.api.views.search_views import (
     single_search,
     multi_search,
     search
 )
 
+
 urlpatterns = [
                   # Geometry Storage API URLs
                   path('collection', collection, name='collection'),
-                  path('feature/<int:id>', feature_by_id, name='feature'),
-                  path('history/<int:id>', history_by_id, name='history'),
+                  path('<int:id>', feature_by_id, name='feature'),
+                  path('<int:id>/history', history_by_id, name='history'),
                   path('feature?key=<str:key>', feature_by_key, name='feature-key'),
                   path('feature?point=<str:point>', feature_by_point, name='feature-point'),
                   path('create', create_feature, name='create'),

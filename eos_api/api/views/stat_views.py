@@ -1,7 +1,7 @@
 import requests
 from rest_framework.decorators import api_view
 from django.http import JsonResponse
-from .models import Task
+from eos_api.api.models import Task
 
 AUTH_HEADER = {
     'Content-Type': 'application/json'

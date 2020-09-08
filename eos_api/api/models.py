@@ -1,6 +1,7 @@
 from django.db import models
 
 
+#   Feature Model
 class Feature(models.Model):
     f_id = models.CharField(max_length=50, blank=False, null=False, unique=True)
     api_key = models.CharField(max_length=300, blank=False, null=False,
@@ -13,6 +14,7 @@ class Feature(models.Model):
         return self.f_id
 
 
+# Task Model
 class Task(models.Model):
     task_id = models.CharField(max_length=200, blank=False, null=False)
     status = models.CharField(max_length=50, blank=False, null=False)

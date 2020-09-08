@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view
 from django.http import JsonResponse
-from .models import Feature
+from eos_api.api.models import Feature
 from django.db import IntegrityError
 import requests
 
