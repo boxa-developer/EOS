@@ -18,12 +18,10 @@ from django.urls import path, include
 from django.shortcuts import render
 
 
-def index(request):
-    return render(request, 'base.html')
-
-
 urlpatterns = [
+    path('search/', include('search.urls')),
     path('admin/', admin.site.urls),
     path('stat/', include('geostat.urls')),
-    path('api/', include('api.urls'))
+    path('api/', include('api.urls')),
+
 ]
