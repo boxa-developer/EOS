@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api',
     'geostat',
+    'search',
     'rest_framework',
 ]
 
