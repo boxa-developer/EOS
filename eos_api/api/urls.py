@@ -1,5 +1,5 @@
 from django.urls import path
-from eos_api.api.views.geometry_views import (
+from .views.geometry_views import (
     collection,
     history_by_id,
     feature_by_id,
@@ -10,37 +10,44 @@ from eos_api.api.views.geometry_views import (
     delete_feature,
     all_features
 )
-from eos_api.api.views.stat_views import (
+from .views.stat_views import (
     create_task,
     check_status
 )
-from eos_api.api.views.search_views import (
+from .views.search_views import (
     single_search,
     multi_search,
     search
 )
 
+from .views.weather_views import (
+    weather_forecast_data,
+)
 
 urlpatterns = [
                   # Geometry Storage API URLs
-                  path('collection', collection, name='collection'),
-                  path('<int:id>', feature_by_id, name='feature'),
-                  path('<int:id>/history', history_by_id, name='history'),
+                  path('feature/collection', collection, name='collection'),
+                  path('feature/<int:id>', feature_by_id, name='feature'),
+                  path('feature/<int:id>/history', history_by_id, name='history'),
                   path('feature?key=<str:key>', feature_by_key, name='feature-key'),
                   path('feature?point=<str:point>', feature_by_point, name='feature-point'),
-                  path('create', create_feature, name='create'),
-                  path('modify', modify_feature, name='modify'),
-                  path('delete', delete_feature, name='delete'),
-                  path('all', all_features, name='all')
+                  path('feature/create', create_feature, name='create'),
+                  path('feature/modify', modify_feature, name='modify'),
+                  path('feature/delete', delete_feature, name='delete'),
+                  path('feature/all', all_features, name='all')
               ] + \
               [
                   # Statistic API URLs
                   path('task/create', create_task, name='create-task'),
-                  path('task/<str:task_id>', check_status, name='check-status')
+                  path('task/status/<str:task_id>', check_status, name='check-status')
               ] + \
               [
                   # Search API URLs
-                  path('single/<str:dataset_id>', single_search, name='single'),
-                  path('multi', multi_search, name='multi'),
-                  path('', search, name='search')
+                  path('search/single/<str:dataset_id>', single_search, name='single'),
+                  path('search/multi', multi_search, name='multi'),
+                  path('search', search, name='search')
+              ] + \
+              [
+                  # Weather API URLs
+                  path('weather/', weather_forecast_data, name='with_data'),
               ]
