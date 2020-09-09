@@ -22,6 +22,12 @@ from .views.search_views import (
 
 from .views.weather_views import (
     weather_forecast_data,
+    weather_forecast,
+    weather_history
+)
+
+from .views.tile_views import (
+    multi_spectral_tile
 )
 
 urlpatterns = [
@@ -49,5 +55,11 @@ urlpatterns = [
               ] + \
               [
                   # Weather API URLs
-                  path('weather/', weather_forecast_data, name='with_data'),
+                  path('weather/data', weather_forecast_data, name='with_data'),
+                  path('weather', weather_forecast, name='no_data'),
+                  path('weather/history', weather_history, name='history')
+              ] + \
+              [
+                  # Tile API URLs
+                  path('tile/multisp', multi_spectral_tile, name='multisp')
               ]
