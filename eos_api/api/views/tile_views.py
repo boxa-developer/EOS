@@ -2,7 +2,7 @@ from typing import Dict
 
 from rest_framework.decorators import api_view
 from django.http import JsonResponse
-from rest_framework.response import Response
+# from rest_framework.response import Response
 import requests
 
 
@@ -14,10 +14,26 @@ AUTH_HEADER: Dict[str, str] = {
 
 @api_view(['GET'])
 def multi_spectral_tile(request):
-    data = request.data
-    url = f'https://gate.eos.com/api/render/{data["view_id"]}/' \
-          f'{data["bands"]}/{data["z"]}/{data["x"]}/{data["y"]}?api_key={api_key}'
-    r = requests.get(url, json=data, headers=AUTH_HEADER)
-    print(r.url)
-    return Response(r)
+    print(f'ENtered: {request.GET.get("url")}')
+    url = request.GET.get("url")
+    urlx = f'https://gate.eos.com/api/render/{url}?api_key={api_key}'
+    r = requests.get(urlx, headers=AUTH_HEADER)
+    return JsonResponse(r.url, safe=False)
+
+
+@api_view(['GET'])
+def virtual_band_tile(request):
+    url = request.GET.get("url")
+    urlx = f'https://gate.eos.com/api/render/{url}?api_key={api_key}'
+    r = requests.get(urlx, headers=AUTH_HEADER)
+    return JsonResponse(r.url, safe=False)
+
+
+@api_view(['GET'])
+def terrain(request):
+    url = request.GET.get("url")
+    urlx = f'https://gate.eos.com/api/render/terrain/{url}?api_key={api_key}'
+    print(urlx)
+    r = requests.get(urlx, headers=AUTH_HEADER)
+    return JsonResponse(r.url, safe=False)
 

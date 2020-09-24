@@ -14,7 +14,6 @@ AUTH_HEADER = {
 # -------------------------------------------- GET Requests -----------------------------------------------------------
 @api_view(['GET'])
 def collection(request):
-
     data = request.data
 
     url = f'https://vt.eos.com/api/data/feature/collection?limit={data["limit"]}&page={data["page"]}'
@@ -27,12 +26,11 @@ def collection(request):
         except IntegrityError as e:
             pass
 
-    return JsonResponse(len(r.json()['result']), safe=False)
+    return JsonResponse((r.json()['result']), safe=False)
 
 
 @api_view(['GET'])
 def all_features(request):
-
     features = Feature.objects.all()
 
     f_coll = {
@@ -44,12 +42,11 @@ def all_features(request):
             ftr.data
         )
 
-    return JsonResponse(collection, safe=False)
+    return JsonResponse(f_coll, safe=False)
 
 
 @api_view(['GET'])
-def history_by_id(request):
-
+def history_by_id(request, id):
     url = f'https://vt.eos.com/api/data/feature/{id}/history'
     r = requests.get(url, headers=AUTH_HEADER)
 
@@ -58,35 +55,43 @@ def history_by_id(request):
 
 @api_view(['GET'])
 def feature_by_id(request, id):
-
     url = f'https://vt.eos.com/api/data/feature/{id}'
-    r = requests.get(url , headers=AUTH_HEADER)
+    r = requests.get(url, headers=AUTH_HEADER)
 
     return JsonResponse(r.json(), safe=False)
 
 
 @api_view(['GET'])
 def feature_by_key(request, key):
-
+    print(key)
     url = f'https://vt.eos.com/api/data/feature?key={key}'
-    r = requests.get(url)
+    r = requests.get(url, headers=AUTH_HEADER)
 
     return JsonResponse(r.json(), safe=False)
 
 
 @api_view(['GET'])
-def feature_by_point(request, point):
+def feature_by_geometry(request):
+    if request.GET.get('point') is not None:
+        url = f'https://vt.eos.com/api/data/feature?point={request.GET.get("point")}'
+        r = requests.get(url, headers=AUTH_HEADER)
+        return JsonResponse(r.json(), safe=False)
+    elif request.GET.get('bbox') is not None:
+        url = f'https://vt.eos.com/api/data/feature?bbox={request.GET.get("bbox")}'
+        r = requests.get(url, headers=AUTH_HEADER)
+        return JsonResponse(r.json(), safe=False)
+    else:
+        return JsonResponse("Something Went Wrong Check Arguments!", safe=False)
+    
 
-    url = f'https://vt.eos.com/api/data/feature?point={point}'
-    r = requests.get(url)
 
-    return JsonResponse(r.json(), safe=False)
+
+
 
 
 # ------------------------------------------- POST Requests -----------------------------------------------------------
 @api_view(['POST'])
 def create_feature(request):
-
     data = request.data
 
     post_url = 'https://vt.eos.com/api/data/feature/'
@@ -107,7 +112,6 @@ def create_feature(request):
 
 @api_view(['POST'])
 def modify_feature(request):
-
     data = request.data
 
     post_url = 'https://vt.eos.com/api/data/feature/'
@@ -125,12 +129,11 @@ def modify_feature(request):
     except Exception as e:
         print(e)
 
-    return JsonResponse(r.json(), safe=False)
+    return JsonResponse(r.json()['id'], safe=False)
 
 
 @api_view(['POST'])
 def delete_feature(request):
-
     data = request.data
 
     url = 'https://vt.eos.com/api/data/feature/'
@@ -142,4 +145,4 @@ def delete_feature(request):
     except Exception as e:
         print(e)
 
-    return JsonResponse(r.json(), safe=False)
+    return JsonResponse(r.json()['id'], safe=False)

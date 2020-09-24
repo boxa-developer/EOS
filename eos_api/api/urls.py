@@ -1,10 +1,10 @@
-from django.urls import path
+from django.urls import path, re_path
 from .views.geometry_views import (
     collection,
     history_by_id,
     feature_by_id,
     feature_by_key,
-    feature_by_point,
+    feature_by_geometry,
     create_feature,
     modify_feature,
     delete_feature,
@@ -27,16 +27,20 @@ from .views.weather_views import (
 )
 
 from .views.tile_views import (
-    multi_spectral_tile
+    multi_spectral_tile,
+    terrain
 )
+
+
+
 
 urlpatterns = [
                   # Geometry Storage API URLs
                   path('feature/collection', collection, name='collection'),
                   path('feature/<int:id>', feature_by_id, name='feature'),
                   path('feature/<int:id>/history', history_by_id, name='history'),
-                  path('feature?key=<str:key>', feature_by_key, name='feature-key'),
-                  path('feature?point=<str:point>', feature_by_point, name='feature-point'),
+                  path('feature/key/<str:key>', feature_by_key, name='feature-key'),
+                  path('feature/geometry/', feature_by_geometry, name='feature-point'),
                   path('feature/create', create_feature, name='create'),
                   path('feature/modify', modify_feature, name='modify'),
                   path('feature/delete', delete_feature, name='delete'),
@@ -61,5 +65,7 @@ urlpatterns = [
               ] + \
               [
                   # Tile API URLs
-                  path('tile/multisp', multi_spectral_tile, name='multisp')
+                  path('tile/simple', multi_spectral_tile, name='multisp'),
+                  path('tile/terrain', terrain, name='terrain'),
+
               ]
