@@ -82,11 +82,6 @@ def feature_by_geometry(request):
         return JsonResponse(r.json(), safe=False)
     else:
         return JsonResponse("Something Went Wrong Check Arguments!", safe=False)
-    
-
-
-
-
 
 
 # ------------------------------------------- POST Requests -----------------------------------------------------------
@@ -146,3 +141,30 @@ def delete_feature(request):
         print(e)
 
     return JsonResponse(r.json()['id'], safe=False)
+
+
+@api_view(['GET'])
+def delete_all_features(request):
+    url = f'https://vt.eos.com/api/data/feature/collection?limit=500&page=1'
+    r = requests.get(url, headers=AUTH_HEADER)
+    ids = []
+    for _ in r.json()['result']:
+        ids.append(_['id'])
+
+    for ix in ids:
+        data = {
+            "action": "delete",
+            "id": ix,
+            "version": 1,
+            "type": "Feature",
+            "message": "Deleted",
+            "properties": {"name": "Editted Text", "shop": True},
+            "geometry": {
+                "type": "Point",
+                "coordinates": [1, 1]
+            }
+        }
+        url = 'https://vt.eos.com/api/data/feature/'
+        r = requests.post(url, headers=AUTH_HEADER, json=data)
+
+    return JsonResponse('Deleted All!', safe=False)

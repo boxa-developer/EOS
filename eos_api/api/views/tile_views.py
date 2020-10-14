@@ -33,7 +33,6 @@ def virtual_band_tile(request):
 def terrain(request):
     url = request.GET.get("url")
     urlx = f'https://gate.eos.com/api/render/terrain/{url}?api_key={api_key}'
-    print(urlx)
     r = requests.get(urlx, headers=AUTH_HEADER)
     return JsonResponse(r.url, safe=False)
 

@@ -8,7 +8,8 @@ from .views.geometry_views import (
     create_feature,
     modify_feature,
     delete_feature,
-    all_features
+    all_features,
+    delete_all_features
 )
 from .views.stat_views import (
     create_task,
@@ -31,10 +32,27 @@ from .views.tile_views import (
     terrain
 )
 
+from .views.field_views import (
+    field_by_point
+)
 
+from .views.highlevel_views import (
+    statistics,
+    download
+)
 
+from .views.colorization_views import (
+    all_colormap,
+    colormap_by_id
+)
+
+from .views.export_view import export_features
 
 urlpatterns = [
+                  #   Field API URLs
+                  path('field', field_by_point, name='field-point')
+              ] + \
+              [
                   # Geometry Storage API URLs
                   path('feature/collection', collection, name='collection'),
                   path('feature/<int:id>', feature_by_id, name='feature'),
@@ -44,7 +62,13 @@ urlpatterns = [
                   path('feature/create', create_feature, name='create'),
                   path('feature/modify', modify_feature, name='modify'),
                   path('feature/delete', delete_feature, name='delete'),
-                  path('feature/all', all_features, name='all')
+                  path('feature/all', all_features, name='all'),
+                  path('features/delete_all', delete_all_features)
+              ] + \
+              [
+                  # High Level API URLs
+                  path('stat', statistics, name='statistics'),
+                  path('download', download, name='download')
               ] + \
               [
                   # Statistic API URLs
@@ -58,6 +82,12 @@ urlpatterns = [
                   path('search', search, name='search')
               ] + \
               [
+                  # Colorization API
+                  path('colors/all', all_colormap, name='colormap_all'),
+                  path('colors', colormap_by_id, name='colormap_by_id')
+
+              ] + \
+              [
                   # Weather API URLs
                   path('weather/data', weather_forecast_data, name='with_data'),
                   path('weather', weather_forecast, name='no_data'),
@@ -67,5 +97,7 @@ urlpatterns = [
                   # Tile API URLs
                   path('tile/simple', multi_spectral_tile, name='multisp'),
                   path('tile/terrain', terrain, name='terrain'),
-
+              ] + \
+              [
+                  path('export_features', export_features)
               ]

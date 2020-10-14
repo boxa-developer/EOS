@@ -17,6 +17,7 @@ ALLOWED_HOSTS = [
     '*',
 ]
 
+CORS_ORIGIN_ALLOW_ALL = True
 # Application definition
 
 INSTALLED_APPS = [
@@ -26,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'api',
     'rest_framework',
 ]
@@ -33,6 +35,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -68,10 +72,10 @@ WSGI_APPLICATION = 'eos_api.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'eos_db',
-        'USER': 'boxa_eos',
-        'PASSWORD': 'parol12345',
-        'HOST': '127.0.0.1',
+        'NAME': 'gis',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': '192.168.100.212',
         'PORT': '5432',
     }
 }
