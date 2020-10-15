@@ -38,7 +38,6 @@ def check_status(request, task_id):
         task = Task.objects.get(task_id=task_id)
         task.data = r.json()
         task.save()
-
-        return JsonResponse(r.json(), safe=False)
+        return JsonResponse("ok", safe=False)
     except Exception as e:
         print(e)

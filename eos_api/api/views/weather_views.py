@@ -3,6 +3,7 @@ from django.db import connection
 from rest_framework.decorators import api_view
 from django.http import JsonResponse
 import requests
+from ..models import EFeature
 
 AUTH_HEADER: Dict[str, str] = {
     'Content-Type': 'application/json'
@@ -33,23 +34,35 @@ def weather_forecast(request):
 @api_view(['POST'])
 def weather_history(request):
     data = request.data
-    send_data = {
-        "geometry": {
-            "type": "Polygon",
-            "coordinates": my_custom_sql(data['polygon_id'])
-        },
-        "start_date": data["start_date"],
-        "end_date": data["end_date"]
-    }
-    print(send_data)
-    url = f'https://gate.eos.com/api/cz/backend/forecast-history/?api_key={api_key}'
-    r = requests.post(url, headers=AUTH_HEADER, json=send_data)
-    print(r.json())
-    return JsonResponse(r.json(), safe=False)
+    print(request.data)
+    export_data = weather_data(data["polygon_id"])
+    if export_data != None:
+        send_data = dict()
+        send_data = {
+            "geometry": export_data[0],
+            "start_date": data["start_date"],
+            "end_date": data["end_date"]
+        }
+
+        url = f'https://gate.eos.com/api/cz/backend/forecast-history/?api_key={api_key}'
+        r = requests.post(url, headers=AUTH_HEADER, json=send_data)
+        print(r.json())
+        return JsonResponse(r.json(), safe=False)
+    else:
+        return JsonResponse('Id mavjum emas!', safe=False)
 
 
 # {'polygon_id': ['1'], 'start_date': ['2020-07-20'], 'end_date': ['2020-08-22']}
 
+def weather_data(pk_id):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT feature_data::json->'geometry' FROM api_efeature  WHERE export_id={};
+            """.format(pk_id)
+        )
+        row = cursor.fetchone()
+    return row
 
 def my_custom_sql(t_id):
     with connection.cursor() as cursor:

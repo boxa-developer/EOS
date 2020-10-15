@@ -46,7 +46,13 @@ from .views.colorization_views import (
     colormap_by_id
 )
 
-from .views.export_view import export_features
+from .views.export_view import (
+    export_features,
+    get_geojson,
+    set_cropper_refs
+)
+
+from .views.download_views import get_visual
 
 urlpatterns = [
                   #   Field API URLs
@@ -99,5 +105,10 @@ urlpatterns = [
                   path('tile/terrain', terrain, name='terrain'),
               ] + \
               [
-                  path('export_features', export_features)
+                  path('export_features', export_features),
+                  path('get_geojson', get_geojson),
+                  path("set_crp", set_cropper_refs)
+              ]+\
+              [
+                  path('download_visual', get_visual)
               ]

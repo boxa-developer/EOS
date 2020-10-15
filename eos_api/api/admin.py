@@ -14,5 +14,5 @@ class FeatureAdmin(admin.ModelAdmin):
 
 @register(EFeature)
 class FeatureAdmin(admin.ModelAdmin):
-    list_display = ['export_id', 'polygon', 'farmer_id']
+    list_display = ['id', 'farmer_id']
 

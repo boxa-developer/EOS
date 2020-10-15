@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.gis.db import models
 
 #   Feature Model
 class Feature(models.Model):
@@ -17,14 +17,14 @@ class Feature(models.Model):
 
 # Export Features Model
 class EFeature(models.Model):
-    export_id = models.CharField(max_length=20, blank=False, null=False)
-    farmer_id = models.CharField(max_length=20, blank=False, null=False)
-    polygon = models.JSONField(dict())
+    farmer_id = models.IntegerField(blank=False, null=False)
+    way = models.GeometryField(srid=3857, null=True, blank=True)
     feature_data = models.JSONField(dict())
     created_date = models.DateTimeField(auto_now=True)
     properties = models.JSONField(dict())
     crop_type = models.IntegerField()
     contour_number = models.IntegerField()
+    cropper_ref = models.CharField(max_length=300, default="c_r")
 
     def __str__(self):
         return f'Fermer #{self.farmer_id} ID: {self.export_id}'
@@ -42,3 +42,10 @@ class Task(models.Model):
         return self.task_id
 
 
+class Visual(models.Model):
+    farmer_id = models.CharField(max_length=200, blank=False, null=False)
+    export_id = models.CharField(max_length=200, blank=False, null=False)
+    visual_url = models.CharField(max_length=300, blank=False, null=False)
+
+    def __str__(self):
+        return 'Visual for #' + str(self.export_id)
