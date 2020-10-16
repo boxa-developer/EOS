@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view
 from django.http import JsonResponse
 import requests
 from ..models import EFeature
+from .query import query_one
 
 AUTH_HEADER: Dict[str, str] = {
     'Content-Type': 'application/json'
@@ -35,8 +36,14 @@ def weather_forecast(request):
 def weather_history(request):
     data = request.data
     print(request.data)
-    export_data = weather_data(data["polygon_id"])
-    if export_data != None:
+    export_data = query_one("""
+            SELECT 
+                feature_data::json->'geometry' 
+            FROM api_efeature  
+            WHERE id={};
+            """.format(data["polygon_id"]))
+
+    if export_data is not None:
         send_data = dict()
         send_data = {
             "geometry": export_data[0],
@@ -47,30 +54,14 @@ def weather_history(request):
         url = f'https://gate.eos.com/api/cz/backend/forecast-history/?api_key={api_key}'
         r = requests.post(url, headers=AUTH_HEADER, json=send_data)
         print(r.json())
-        return JsonResponse(r.json(), safe=False)
+
+        chart_data = {
+            "date": [r.json()[i]["date"] for i in range(len(r.json()))],
+            "min": [float(r.json()[i]["temperature_min"]) for i in range(len(r.json()))],
+            "max": [float(r.json()[i]["temperature_max"]) for i in range(len(r.json()))],
+            "veg": [float(r.json()[i]["rainfall"]) for i in range(len(r.json()))],
+        }
+
+        return JsonResponse(chart_data, safe=False)
     else:
         return JsonResponse('Id mavjum emas!', safe=False)
-
-
-# {'polygon_id': ['1'], 'start_date': ['2020-07-20'], 'end_date': ['2020-08-22']}
-
-def weather_data(pk_id):
-    with connection.cursor() as cursor:
-        cursor.execute(
-            """
-            SELECT feature_data::json->'geometry' FROM api_efeature  WHERE export_id={};
-            """.format(pk_id)
-        )
-        row = cursor.fetchone()
-    return row
-
-def my_custom_sql(t_id):
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT "
-                       "ST_AsGeoJSON(ST_Transform(way,3857))::json -> 'coordinates'"
-                       " FROM agromonitoring.polygons2 "
-                       "WHERE id = 1;")
-
-        row = cursor.fetchone()
-
-    return row

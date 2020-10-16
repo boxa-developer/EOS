@@ -52,7 +52,7 @@ from .views.export_view import (
     set_cropper_refs
 )
 
-from .views.download_views import get_visual
+from .views.download_views import get_visual, get_images
 
 urlpatterns = [
                   #   Field API URLs
@@ -110,5 +110,6 @@ urlpatterns = [
                   path("set_crp", set_cropper_refs)
               ]+\
               [
-                  path('download_visual', get_visual)
+                  path('download_visual', get_visual),
+                  path('download_ndvi', get_images)
               ]

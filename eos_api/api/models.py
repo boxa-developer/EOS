@@ -27,7 +27,7 @@ class EFeature(models.Model):
     cropper_ref = models.CharField(max_length=300, default="c_r")
 
     def __str__(self):
-        return f'Fermer #{self.farmer_id} ID: {self.export_id}'
+        return f'Fermer #{self.farmer_id} ID: {self.id}'
 
 
 # Task Model
