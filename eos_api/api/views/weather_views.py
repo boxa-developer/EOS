@@ -56,7 +56,7 @@ def weather_history(request):
         print(r.json())
 
         chart_data = {
-            "date": [r.json()[i]["date"] for i in range(len(r.json()))],
+            "x": [r.json()[i]["date"] for i in range(len(r.json()))],
             "min": [float(r.json()[i]["temperature_min"]) for i in range(len(r.json()))],
             "max": [float(r.json()[i]["temperature_max"]) for i in range(len(r.json()))],
             "veg": [float(r.json()[i]["rainfall"]) for i in range(len(r.json()))],
